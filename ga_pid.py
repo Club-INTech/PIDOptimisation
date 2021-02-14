@@ -54,6 +54,8 @@ def adaptiveness(individuals, previous_error, instruction):
         individual.ki = individual.ki - (ki_change * ki_score)
         individual.kd = individual.kd - (kd_change * kd_score)
 
+    return individuals
+
 
 def sign(err1, err2):
     return (err1 - err2) / abs(err1 - err2)
@@ -89,7 +91,7 @@ def crossover(individuals, population):
 
 def mutation(individuals):
     for individual in individuals:
-        if random.uniform(0.0, 1.0) <= 0.09:
+        if random.uniform(0.0, 1.0) <= MUTATION_CONDITION:
             individual.kp = MUTATION_MULTIPLIER * individual.kp
             individual.ki = MUTATION_MULTIPLIER * individual.ki
             individual.kd = MUTATION_MULTIPLIER * individual.kd

@@ -127,3 +127,11 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# LaTex ignore
+
+*.png
+*.jpg
+*.aux
+*.synctex.gz
+*.out
