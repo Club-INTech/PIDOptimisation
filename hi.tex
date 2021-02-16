@@ -77,7 +77,7 @@ Après avoir implimenté un algorithme génétique capable de corriger de maniè
 
 \subsection{Fonction de Transfert}
 
-Calculons d'abord la fonction de transfert du système qu'on veut asservir. Comme système on choisit le robot qui se déplace grâce à un moteur de courant continue. On a, donc un schèma bloc suivant, qui décrit une partie de la chaîne du système :
+Calculons d'abord la fonction de transfert du système qu'on veut asservir en vitesse. Comme système on choisit le robot qui se déplace grâce à un moteur de courant continue. On a, donc un schèma bloc suivant, qui décrit une partie de la chaîne du système :
 \includegraphics[width=16cm, height=10cm]{bloc1}
 
 \subsection{Fonction de transfert du moteur à courant continu (M(p))}
@@ -96,13 +96,15 @@ où \begin{math}  \tau = \frac{RJ}{K^2 + Rf} \end{math}, et \begin{math} \tau e 
 Pour plus d'informations, voir \href{http://physiquenetappliquee.free.fr/Modele_dyna_MCC.php}{ici, par exemple}
 
 On les ordres de grandeur de moteurs utilisés(nom du moteur) : 
-\begin{equation} R=20\Omega ,  J=25 kg  \cdot m^2 , f=0.67 , L =45mH , K=13 \end{equation}
+\begin{equation} R=10\Omega ,  J=10^{-3} kg  \cdot m^2 , f=0.45 , L =20mH , K=0.19SI \end{equation}
 
-D'où \begin{math} \tau e = 2123 , \tau = 3535 , K_0 = 352353\end{math}
+D'où \begin{math} \tau e = 20 \cdot 10^{-4} , \tau = 2.2 \cdot 10^{-3} , K_0 = 4.2 \cdot 10^{-2} \end{math}
 
 \subsection{Fonction de transfert du système mécanique (R(p))}
 
-On modélise la courbure du sol par une simple sinusoide \begin{equation}  r(t) = A \cdot \sin (\omega_0 t) \end{equation}
+On modélise la courbure du sol par une simple sinusoide \begin{equation}  r(t) = A \cdot \sin (\omega_v t) \end{equation}
+
+où \begin{math} \omega_v = \frac{2\pi v}{s_0}\end{math}
 
 Comme l'angle d'inclinaison est très petite on a : \begin{equation} N = mg , \sin \alpha \approx \tan \alpha \approx \alpha\end{equation} 
 
@@ -113,25 +115,29 @@ La force des frottements fluides(projection en x, en supposant la vitesse faible
 La force motrice : \begin{equation} F_m = \frac{J}{r} \cdot \frac{d\omega}{dt}\end{equation} 
 
 La force des frottements solides (en supposant système à l'équilibre dynamique, se déplaçant depuis longtemps à une vitesse de consigne) : \begin{equation} -K_s \sigma mg  \end{equation}
-On a \begin{math}  \sigma =\frac{A \omega_0 r \epsilon}{2<v>^2} \cdot v \end{math}
+On a \begin{math}  \sigma =\frac{A \omega_v r \epsilon}{2<v>} = \pi \cdot \frac{Av}{s_0<v>} \cdot r \epsilon \end{math}
 
 Les ordres de grandeurs et la description des constantes utilisées : 
 
-\begin{math} A = 0.001m \end{math} est une amplitude de la courbure,  \begin{math} m=5kg \end{math} la masse de robot, l'angle moyen de surface avec l'horizontal, \begin{math} r=0.3m \end{math} rayon de la roue, \begin{math} J = 25 kg \cdot m^2 \end{math} moment d'inertie de la roue, \begin{math} \epsilon  = 0.01m \end{math} l'épaisseur de la roue, \begin{math} <v>=1 \frac{m}{s} \end{math} la vitesse moyenne, \begin{math} K_f = 0.65 \end{math} la constante des frottements fluides, la constante des frottements solides et \begin{math} K_s = 0.05 \frac{1}{m^2} \end{math} la constante de frottements solide par unité de surface.
+\begin{math} A = 0.001m \end{math} est une amplitude de la courbure,  \begin{math} m=5kg \end{math} la masse de robot, l'angle moyen de surface avec l'horizontal, \begin{math} r=0.03m \end{math} rayon de la roue, \begin{math} s_0=0.04m \end{math} longueur caractéristique de la courbure, \begin{math} J = 10^{-3} kg \cdot m^2 \end{math} moment d'inertie de la roue, \begin{math} \epsilon  = 0.008m \end{math} l'épaisseur de la roue, \begin{math} <v>=1 \frac{m}{s} \end{math} la vitesse moyenne, \begin{math} K_f = 1.7 \cdot 10^{-4} SI \end{math} (loi de Stokes) la constante des frottements fluides, la constante des frottements solides et \begin{math} K_s = 0.45 SI \end{math} la constante de frottements solide par unité de surface.
 
 On obtient une équation différentielle (PFD) :
 
-\begin{equation} \frac{J}{r} \cdot \frac{d\omega}{dt} - K_f \cdot v - K_s \frac{A \omega_0 r \epsilon}{2<v>^2} \cdot v mg = m \cdot \frac{dv}{dt}\end{equation}
+\begin{equation} \frac{J}{r} \cdot \frac{d\omega}{dt} - K_f \cdot v - K_s \cdot  \frac{A\pi r \epsilon mg}{s_0<v>}  \cdot v = m \cdot \frac{dv}{dt}\end{equation}
 
 Alors
 
-\begin{equation} R(p) = \frac{\frac{J}{r K_1}p}{\frac{m}{K_1}p + 1} , K_1 = K_f + K_s \cdot \frac{A\omega_0 r \epsilon mg}{2<v>^2}\end{equation}
+\begin{equation} R(p) = \frac{\frac{J}{r K_1}p}{\frac{m}{K_1}p + 1} , K_1 = K_f + K_s \cdot \frac{A\pi r \epsilon mg}{s_0<v>} \end{equation}
 
-On \begin{math} K_1 \approx 3243 \end{math}
+On \begin{math} K_1 \approx 5.86 \cdot 10^{-4} SI \end{math}
 
 \subsection{Chaîne directe}
 
-Rajoutons maintenant un correcteur PID et calculons la fonction de transfert de la chaîne directe.
+Rajoutons maintenant un correcteur PID et calculons la fonction de transfert de la chaîne directe. Le schèma bloc général est ci-dessous, avec \begin{math} T(s) = 1 \end{math} et \begin{math} H(s) = M(s)R(s) \end{math} :
+
+\includegraphics[width=14cm, height=8cm]{CorrecteurPIDclassique} 
+
+Dans notre cas la consigne est constante \begin{math} v_c(t) = c \end{math} , soit dans le domaine de Laplace \begin{math} V_c(p) = \frac{C}{p} \end{math}
 
 
 \subsection{Extraction de sortie temporelle}
