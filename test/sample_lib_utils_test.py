@@ -1,7 +1,6 @@
 import unittest
-from sample_lib_utils import *
-from ga_pid_const import EPS, MAX_SCORE
-
+from GA.sample_lib_utils import *
+from GA.ga_pid_const import EPS
 
 t1 = [0.05 * i for i in range(10)]
 t2 = [0.05 * i for i in range(20)]

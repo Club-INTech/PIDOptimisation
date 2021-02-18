@@ -66,25 +66,25 @@
 
 \section{Introduction}
 
-Après avoir implimenté un algorithme génétique capable de corriger de manière automatique des coéfficients PID, on s'intèresse à un autre problème avant de l'utiliser pour faire un asservissement réel : Comment choisir certaines constantes utilisées dans GA, afin d'augmenter la vitesse de convergence et assurer la convergence vers un équilibre maximale? Il y a 2 réponses. Le premier est pûrement théorique : Il faut formaliser mathématiquement le processus d'évolution décrit dans GA et éstimer un coéfficient PID. Dans ce cas un éstimateur est un individu avec le meilleur score dans la population numéro n. Sachant que la première population est générée de manière aléatoire, un individu est réprésenté comme une variable aléatoire (Séction 2). Deuxième approche est de simuler la sortie de la chaîne Correcteur PID - Moteur CC pour des systèmes d'ordre différentes et de trouver, de manière émpirique les meuilleurs constantes possibles (Séction 3).
+Après avoir implimenté un algorithme génétique capable de corriger de manière automatique des coéfficients PID, on s'intèresse à un autre problème avant de l'utiliser pour faire un asservissement réel : Comment choisir certaines constantes utilisées dans GA, afin d'augmenter la vitesse de convergence et assurer la convergence vers un équilibre maximale? Pour ça, il faut pouvoir tester un algorithme. On doit, donc, simuler la sortie temporelle du système numériquement. On modélise notre système par une fonction de transfert dans le domaine de Laplace (Section 2). On passe ensuite dans le domaine temporelle, en utilisant le fait que le nombre de points est fini et les points sont assez proches.
+
+P. S. : Ce document fait partie de répertoire GitHub. Le code associé se trouve dans le dossier "simulator".
 
 
-\subsection{A subsection}
-
-\section{Approche théorique}
-
-\section{Simulation}
-
-\subsection{Fonction de Transfert}
+\section{Fonction de Transfert}
 
 Calculons d'abord la fonction de transfert du système qu'on veut asservir en vitesse. Comme système on choisit le robot qui se déplace grâce à un moteur de courant continue. On a, donc un schèma bloc suivant, qui décrit une partie de la chaîne du système :
-\includegraphics[width=16cm, height=10cm]{bloc1}
+\begin{center}
+\includegraphics[width=9cm, height=4cm]{bloc1}
+\end{center}
 
 \subsection{Fonction de transfert du moteur à courant continu (M(p))}
 
 On peut modéliser le moteur CC par une approche classique. On obtient un modèle équivalent en régime dynamique :
 
+\begin{center}
 \includegraphics[width=12cm, height=8cm]{schem_induit}
+\end{center}
 
 Il est facile de démontrer qu'en appliquant le principe fondamental de la dynamique, il est facile d'obtenir la fonction de transfert :
 
@@ -137,9 +137,37 @@ Rajoutons maintenant un correcteur PID et calculons la fonction de transfert de 
 
 \includegraphics[width=14cm, height=8cm]{CorrecteurPIDclassique} 
 
-Dans notre cas la consigne est constante \begin{math} v_c(t) = c \end{math} , soit dans le domaine de Laplace \begin{math} V_c(p) = \frac{C}{p} \end{math}
+Dans notre cas la consigne est constante \begin{math} v_c(t) = v_0 \end{math} , soit dans le domaine de Laplace \begin{math} V_c(p) = \frac{V_0}{p} \end{math}
+
+On pose \begin{math} C(p)  = \frac{1 + K_p K_i p + K_d K_i p^2}{K_i p}\end{math} la fonction de transfert de correcteur PID
+Alors, on obtient :
+
+\begin{equation} V(p) = \frac{V_0}{p + \frac{p}{C(p)R(p)M(p)}} \end{equation}
 
 
-\subsection{Extraction de sortie temporelle}
+\section{Extraction de sortie temporelle}
+
+Prenons un cas général, quand on a \begin{math} n \end{math} valeurs réelles de \begin{math} (p_i)_{1 \leq i \leq n}\end{math}. On obtient un vecteur de sortie dans le domaine de Laplace colonne \begin{math} S_p ,  \forall i \in [1,n],  [S_p]_{i,1} = S(p_i) \end{math}.
+
+On définit aussi \begin{math} (t_i)_{0 \leq i \leq n} \, t_i = i \cdot \delta t \end{math} et un vecteur colonne \begin{math} S_t ,  \forall i \in [1,n],  [S_t]_{i,1} = s(t_i) \end{math}.
+
+On a, d'après la définition de la transformée de Laplace, \begin{math}  S(p_i) = \int_{0}^{\infty} s(t) \cdot e^{-p_i t}\,dt\end{math}. Comme seule répresentation discrète de \begin{math} s(t) \end{math} nous intéresse, on applique le méthode des réctangles pour le calcul de cet intégral (qui existe, car la fonction \begin{math} t \mapsto C \cdot e^{-p_i t}\end{math} est intégrable). On a, en supposant le système est à l'équilibre à l'instant \begin{math} t_n \end{math} :
+
+\begin{equation}  \int_{0}^{\infty} s(t) \cdot e^{-p_i t}\,dt = \sum_{k=1}^{n} s(t_k) e^{-p_i t_k} \cdot (t_k - t_{k-1}) + \int_{t_n}^{\infty} s(t_n) e^{-p_i t} \, dt \end{equation}
+
+En simplifiant et en calculant la valeur d'intégrale, on obtient : 
+
+\begin{equation} S(p_i) = \sum_{k=1}^{n-1} s(t_k) \cdot \delta t e^{-p_i k \delta t} + s(t_n) \cdot e^{-p_i n \delta t}(\delta t  + \frac{1}{p_i})\end{equation}
+
+On a, donc :
+
+\begin{equation} S_p = A \cdot S_t \end{equation} 
+
+\[ A  = \left\{  \begin{array}{ll}
+         A_{i,j} = \delta t \cdot e^{-p_i j \delta t} & \mbox{si ${i,j} \in {[1,n] \times [1,n-1]}$}; \\
+         A_{i,n} = (\delta t + \frac{1}{p_i}) \cdot e^{-p_i n \delta t}  & \mbox{si $i \in {[1,n]}$}. \end{array} \right. \] 
+
+Comme on voit, la matrice ne dépend pas de la sortie, mais uniquement des points choisis. Il suffit, donc, d'inverser la matrice (à condition que les \begin{math} (p_i)_{1 \leq i \leq n}\end{math} sont disjoints et la matrice est inversible)
+
 
 \end{document}
