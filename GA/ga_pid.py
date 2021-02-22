@@ -4,9 +4,9 @@ from ga_pid_const import *
 import random
 
     
-def ga_step(individuals, instruction, previous_error, max_score=MAX_SCORE, population=POPULATION):
+def ga_step(individuals, instruction, previous_error,population=POPULATION):
 
-    individuals = score(individuals, max_score, instruction)
+    individuals = score(individuals, instruction)
     individuals = selection(individuals)
     individuals = adaptiveness(individuals, previous_error, instruction)
     individuals = crossover(individuals, population)
@@ -15,16 +15,16 @@ def ga_step(individuals, instruction, previous_error, max_score=MAX_SCORE, popul
     return individuals
 
 
-def score(individuals, max_score, instruction):
+def score(individuals, instruction):
     for individual in individuals:
-        individual.score = score_mod(individual.s, individual.t, max_score, instruction)
+        individual.score = score_mod(individual.s, individual.t, instruction)
     
     return individuals
 
 
 def selection(individuals):
 
-    individuals = sorted(individuals, key=lambda individual: individual.score, reverse=True)
+    individuals = sorted(individuals, key=lambda individual: individual.score, reverse=False)
     individuals = individuals[0:int(SELECTION_RATE * len(individuals))]
 
     return individuals

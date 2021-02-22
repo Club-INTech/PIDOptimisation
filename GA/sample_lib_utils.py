@@ -1,4 +1,4 @@
-from ga_pid_const import MIN_POINTS_NUMBER, EPS, MAX_SCORE
+from ga_pid_const import MIN_POINTS_NUMBER, EPS
 
 
 def is_sample_ok(s, t):
@@ -70,7 +70,8 @@ def absolute_error(s, t, instruction):
     return error
 
 
-def score_mod(s, t, module, instruction):
+def score_mod(s, t, instruction):
     if not is_stable(s, EPS):
         return 0
-    return module - (((3 * (stat_error(s, instruction) + absolute_error(s, t, instruction))) + 2 * (response_time(s, t) + overflow(s))) % module)
+    return (3 * (stat_error(s, instruction) + absolute_error(s, t, instruction))) + 2 * (response_time(s, t) + overflow(s))
+
