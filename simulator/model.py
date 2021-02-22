@@ -1,9 +1,9 @@
 import numpy as np
 from scipy import linalg
 from math import exp
-from modelisation_info import POINTS_NUMBER, DELTA_T
-from tranfer import S_p
-from p_t_generator import *
+from simulator.modelisation_info import POINTS_NUMBER, DELTA_T
+from simulator.tranfer import S_p
+from simulator.p_t_generator import *
 
 p = generate_p(POINTS_NUMBER)
 t = generate_t(POINTS_NUMBER, DELTA_T)

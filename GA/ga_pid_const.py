@@ -39,7 +39,7 @@ KD_T5_ERR_ADAPTIVENESS_RATING = 3
 
 # Sample analysis
 
-MIN_POINTS_NUMBER = 20
+MIN_POINTS_NUMBER = 40
 
 # Comparison section
 

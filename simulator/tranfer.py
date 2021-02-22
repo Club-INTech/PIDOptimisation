@@ -1,4 +1,4 @@
-from modelisation_info import *
+from simulator.modelisation_info import *
 
 
 def S_p (V0, p, Kp, Ki, Kd):
