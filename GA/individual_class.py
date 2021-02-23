@@ -1,11 +1,11 @@
 import random
-from ga_pid_const import MAX_SCORE, MAX_KD, MAX_KI, MAX_KP
+from GA.ga_pid_const import MAX_KD, MAX_KI, MAX_KP
 
 
 class Individual:
 
     def __init__(self):
-        self.score = MAX_SCORE
+        self.score = None
         self.s = []
         self.t = []
         self.kp = random.uniform(0.0, 1.0) * MAX_KP

@@ -1,10 +1,10 @@
-from sample_lib_utils import *
-from individual_class import Individual
-from ga_pid_const import *
+from GA.sample_lib_utils import *
+from GA.individual_class import Individual
+from GA.ga_pid_const import *
 import random
 
     
-def ga_step(individuals, instruction, previous_error,population=POPULATION):
+def ga_step(individuals, instruction, previous_error, population=POPULATION):
 
     individuals = score(individuals, instruction)
     individuals = selection(individuals)
@@ -58,6 +58,8 @@ def adaptiveness(individuals, previous_error, instruction):
 
 
 def sign(err1, err2):
+    if err1 - err2 <= EPS:
+        return 0
     return (err1 - err2) / abs(err1 - err2)
 
 

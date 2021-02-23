@@ -1,4 +1,4 @@
-from ga_pid_const import MIN_POINTS_NUMBER, EPS
+from GA.ga_pid_const import MIN_POINTS_NUMBER, EPS
 
 
 def is_sample_ok(s, t):
@@ -59,7 +59,8 @@ def response_time(s, t):
     while stat_value * .95 < s[j] < stat_value * 1.05:
         j = j-1
         if j < 0:
-            return -1
+            return 2 * t[len(t) - 1]
+    if j == len(t) - 1: return t[j]
     return t[j+1]
 
 
@@ -71,7 +72,8 @@ def absolute_error(s, t, instruction):
 
 
 def score_mod(s, t, instruction):
+    stability_score = 0
     if not is_stable(s, EPS):
-        return 0
-    return (3 * (stat_error(s, instruction) + absolute_error(s, t, instruction))) + 2 * (response_time(s, t) + overflow(s))
+        stability_score = 100
+    return (3 * (stat_error(s, instruction) + absolute_error(s, t, instruction))) + 2 * (response_time(s, t) + overflow(s)) + stability_score
 
