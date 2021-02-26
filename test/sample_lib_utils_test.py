@@ -26,7 +26,7 @@ class SampleLibUtilsTest(unittest.TestCase):
         self.assertTrue(abs(stat_error(s3, 1) - 0.1) <= EPS)
 
     def test_overflow(self):
-        self.assertTrue(abs(overflow(s3) - 0.31) <= EPS)
+        self.assertTrue(abs(overflow(s3, 0.9) - 0.31) <= EPS)
 
     def test_T5(self):
         self.assertTrue(abs(response_time(s3, t2) - 0.7) <= EPS)

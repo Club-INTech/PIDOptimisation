@@ -4,6 +4,7 @@ from GA.individual_class import Individual
 from GA.ga_pid_const import POPULATION, GENERATIONS
 from simulator.model import model_output
 from GA.sample_lib_utils import *
+from logger import logger
 import matplotlib.pyplot as pyplot
 
 
@@ -15,11 +16,14 @@ class GATest(unittest.TestCase):
             s, t = model_output(1, people[i].kp, people[i].ki, people[i].kd)
             people[i].set_s_t(s, t)
 
-        for _ in range(GENERATIONS):
+        logger_step = GENERATIONS / 20
+        file = logger.define_file()
+        for i in range(GENERATIONS):
 
+            # errors of the previous best individuals in population
             si, ti = model_output(1, people[0].kp, people[0].ki, people[0].kd)
             stat_err = stat_error(si, 1)
-            over = overflow(si)
+            over = overflow(si, 1)
             t5 = response_time(si, ti)
             abs_err = absolute_error(si, ti, 1)
             prev_err = [stat_err, over, t5, abs_err]
@@ -28,6 +32,9 @@ class GATest(unittest.TestCase):
             for i in range(len(people)):
                 s, t = model_output(1, people[i].kp, people[i].ki, people[i].kd)
                 people[i].set_s_t(s, t)
+
+            if i % logger_step == 0:
+                logger.save_evolution(file, people, 1)
 
         os, ot = model_output(1, people[0].kp, people[0].ki, people[0].kd)
         pyplot.plot(ot, os)

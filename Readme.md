@@ -34,15 +34,15 @@ les constantes de simulation. model contient une méthode pour générer un outp
 
 Des tests, quoi
 
-### Modules
+### Logger
 
-* [sample_lib_utils](#sample_lib_utils)
-* [individual_class](#individual_class)
-
-#### sample_lib_utils
-
-#### individual_class
+Contient le logger utilisé pour la sauvegarde d'un étape d'évolution
+Il suffit juste de définir le path vers le dossier des logs.
 
 ## GA
 
+Testing
+
 ## Modification de GA
+
+Adaptiveness testing

@@ -40,9 +40,8 @@ def stat_error(s, instruction):
     return abs(s[-1] - instruction)
 
 
-def overflow(s):
-    stat_value = s[-1]
-    return max_arr(s) - stat_value
+def overflow(s, instruction):
+    return max_arr(s) - instruction
 
 
 def max_arr(s):
@@ -75,5 +74,5 @@ def score_mod(s, t, instruction):
     stability_score = 0
     if not is_stable(s, EPS):
         stability_score = 100
-    return (3 * (stat_error(s, instruction) + absolute_error(s, t, instruction))) + 2 * (response_time(s, t) + overflow(s)) + stability_score
+    return (3 * (stat_error(s, instruction) + absolute_error(s, t, instruction))) + 2 * (response_time(s, t) + overflow(s, instruction)) + stability_score
 

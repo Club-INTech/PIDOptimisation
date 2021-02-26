@@ -33,7 +33,7 @@ def selection(individuals):
 def adaptiveness(individuals, previous_error, instruction):
     for individual in individuals:
         stat_err = stat_error(individual.s, instruction)
-        over = overflow(individual.s)
+        over = overflow(individual.s, instruction)
         t5 = response_time(individual.s, individual.t)
         abs_err = absolute_error(individual.s, individual.t, instruction)
 
