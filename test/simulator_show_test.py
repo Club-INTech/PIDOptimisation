@@ -1,6 +1,6 @@
 import unittest
-from simulator.model import model_output
-from simulator.model import S_vector, p, inverse_solution_matrix
+from inverse_laplace_simulator.model import model_output
+from inverse_laplace_simulator.model import S_vector, p, inverse_solution_matrix
 import matplotlib.pyplot as pyplot
 
 

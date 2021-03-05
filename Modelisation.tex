@@ -147,6 +147,8 @@ Alors, on obtient :
 
 \section{Extraction de sortie temporelle}
 
+\subsection{Méthode d'inversion discrète de la transformée de Laplace (ne marche pas pour le moment : voir les commits)}
+
 Prenons un cas général, quand on a \begin{math} n \end{math} valeurs réelles de \begin{math} (p_i)_{1 \leq i \leq n}\end{math}. On obtient un vecteur de sortie dans le domaine de Laplace colonne \begin{math} S_p ,  \forall i \in [1,n],  [S_p]_{i,1} = S(p_i) \end{math}.
 
 On définit aussi \begin{math} (t_i)_{0 \leq i \leq n} \, t_i = i \cdot \delta t \end{math} et un vecteur colonne \begin{math} S_t ,  \forall i \in [1,n],  [S_t]_{i,1} = s(t_i) \end{math}.
@@ -168,6 +170,19 @@ On a, donc :
          A_{i,n} = (\delta t + \frac{1}{p_i}) \cdot e^{-p_i n \delta t}  & \mbox{si $i \in {[1,n]}$}. \end{array} \right. \] 
 
 Comme on voit, la matrice ne dépend pas de la sortie, mais uniquement des points choisis. Il suffit, donc, d'inverser la matrice (à condition que les \begin{math} (p_i)_{1 \leq i \leq n}\end{math} sont disjoints et la matrice est inversible)
+
+\subsection{Modélisation par une résolution d'équation différentielle par le méthode d'Euler} 
+
+\subsection{Equation différentielle}
+
+\subsection{Résolution}
+
+Soit une équation \begin{equation} \sum_{k=0}^{n} a_k \cdot y ^ {(k)}(t) = f(t) \end{equation}
+On pose, donc \begin{math} Y(t) = (y^{(k)}(t))_{0 \leq k \leq n-1}^T\end{math} , alors 
+\begin{math} Y^{(1)}(t) = (y^{(k)}(t))_{1 \leq k \leq n}^T\end{math}. Comme on dispose d'une équation différentielle, on peut trouver la rélation entre \begin{math} Y(t) \,  et \, \,Y^{(1)}(t) \end{math}. En effet il existe une matrice \begin{math} A(t) \, tq \, Y^{(1)}(t) = A(t)Y(t) \end{math}.
+
+Supposons qu'on dispose d'un vecteur \begin{math} t = (t_i)_{0 \leq i \leq p} \, ,tq \, t_0 = 0  \, et \, \forall i \in [1,n] \, t_i - t_{i-1}= dt \end{math} et de vecteur \begin{math} Y_0 = (y^{(k)}(0))_{0 \leq k \leq n-1}^T \end{math}. On obtient, donc un problème de Cauchy, qu'on peut résoudre numériquement à temps discret:  \begin{math} Y(t_i+1) = Y(t_i) + dt \cdot A(t_i)Y(t_i) \end{math}
+
 
 
 \end{document}

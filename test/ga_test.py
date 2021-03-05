@@ -2,7 +2,7 @@ import unittest
 from GA.ga_pid import ga_step
 from GA.individual_class import Individual
 from GA.ga_pid_const import POPULATION, GENERATIONS
-from simulator.model import model_output
+from inverse_laplace_simulator.model import model_output
 from GA.sample_lib_utils import *
 from logger import logger
 import matplotlib.pyplot as pyplot
